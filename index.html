@@ -1,0 +1,118 @@
+<head>
+    <title>Weather App</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    
+    <style>
+        body {
+            text-align: center;
+            padding-top: 150px;
+            color: #fff;
+            background-color: black;
+            font-family: cursive;
+        }
+        
+        
+        .container {
+            padding-top: 30px;
+        }
+        
+        a {
+            color: darkblue;
+        }
+        
+        .container p {
+            font-size: 1.8em;
+            text-transform: capitalize;
+        }
+        
+        #temp {
+            cursor: pointer;
+        }
+        
+        .copyright {
+            padding-top: 150px;
+        }
+    </style>
+    
+</head>
+
+<body>
+    
+    <header>
+        <h1>Weather App</h1>   
+    </header>
+    
+    <div class="container">
+          <p id="city"></p>
+          <p id="weatherType"></p>
+          <p id="temp"></p>
+          <p id="windSpeed"></p>
+    </div>
+    
+    <div class="copyright">
+          <p>by @ <a href="http://fatemamelg.github.io" target="_blank">Fatema M.</a></p>
+    </div>
+
+    
+    <script>
+        $(document).ready(function() {
+  
+            // Find the location
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+
+              var long;
+              var lat;
+              long = position.coords.longitude;
+              lat = position.coords.latitude;
+
+              //API URL with geolocation
+              var api ="http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+long+"&appid=41005115ff7a5af7b79a9a75e8698e3f";
+
+              $.getJSON(api, function(data) {
+
+                var fTemp;
+                var kTemp;
+                var cTemp;
+                var tempSwap;
+
+                var weatherType = data.weather[0].description;
+                kTemp = data.main.temp;
+                var windSpeed = data.wind.speed;
+                var city = data.name;
+
+                  // Calculation of temp in C and F
+                fTemp = parseInt((kTemp)*(9/5)-459.67) + " &#8457";
+                cTemp = parseInt((kTemp -273)) + " &#8451";
+
+
+                $("#city").html(city);
+                $('#weatherType').html(weatherType);
+                $("#temp").html(cTemp);
+                  
+                  
+                $("#temp").click(function() {     
+                  if (tempSwap === false) {
+                    $("#temp").html(fTemp);
+                    tempSwap = true;
+                  } else {
+                    $("#temp").html(cTemp);
+                    tempSwap = false;
+                  }
+                })
+
+                windSpeed = (2.237 * windSpeed).toFixed(2);
+                $("#windSpeed").html("Wind Speed: " + windSpeed);
+              })
+
+            });
+          }
+
+
+        })
+    </script>
+</body>
